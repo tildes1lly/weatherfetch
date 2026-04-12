@@ -34,8 +34,6 @@ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 cargo install --git https://github.com/tildes1lly/weatherfetch
 ```
 
-**NOTE: IF YOU CANNOT RUN** `weatherfetch` **AFTER INSTALLING, ADD** `~/.cargo/bin` **TO YOUR *PATH***
-
 #### Windows
 
 Unfortunately, Windows does not have a Rust install script. However, you can still install weatherfetch by doing the following:
