@@ -2,7 +2,7 @@
 
 neofetch, but weather - A weather CLI written in Rust using the Open Meteo API.
 
-![Screenshot 1](README_media/Screenshot_1.png)<br>
+![Screenshot 1](README_media/Screenshot_1.png)
 
 ## Installation
 
@@ -13,7 +13,8 @@ To install weatherfetch with Rust already installed on your system, run:
 ```bash
 cargo install --git https://github.com/tildes1lly/weatherfetch
 ```
-<small>This will work regardless of your operating system</small>
+
+This will work regardless of your operating system.
 
 ### Without Rust
 
@@ -65,7 +66,7 @@ weatherfetch supports a few custom arguments (**these will override whatever is 
 - `--no-color` / `--color`. Whether or not the output should be colored.
 - `--no-icon` / `--icon`. Whether or not to show an ASCII icon next to the weather results.
 
-#### Usage
+#### Using arguments
 
 If you do not know how to use custom arguments, you can use them by appending the argument to the weatherfetch command like so:
 
@@ -89,7 +90,8 @@ The config file should look something like:
 }
 ```
 
-Each field in the config is the equivalent a custom argument, see Usage for more info. <br>
+Each field in the config is the equivalent a custom argument, see Usage for more info.
+
 **NOTE: The custom_location field is currently unsupported and changing it will do literally nothing.**
 
 ## License
