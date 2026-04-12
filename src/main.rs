@@ -7,9 +7,10 @@ mod weather;
 use chrono::prelude::*;
 
 fn main() {
-    
-    #[cfg(target_os = "windows")]
+
+    #[cfg(target_os = "windows")] // windows fix because windows sucks ass and everyone hates windows please switch to linux i never want to debug windows specific niche bugs again i hate you microsoft
     colored::control::set_virtual_terminal(true).ok();
+
     let args: Vec<String> = std::env::args().collect();
     let raw_config = args::parse(args);
     let config = raw_config.unwrap_or_else(|| config::gen_config());
