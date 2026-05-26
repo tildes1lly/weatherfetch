@@ -236,7 +236,11 @@ pub fn output(weather_data: weather::OpenMeteoResponse, air_quality_data: weathe
 
     for (_index, line) in data.lines().enumerate() {
         let ascii_line = icon.lines().nth(_index).unwrap_or("").bold().truecolor(4, 244, 214).to_string();
-        output.push_str(&format!("  {}  {}\n", ascii_line, line));
+        if config.no_icon {
+            output.push_str(&format!("  {}\n", line));
+        } else {
+            output.push_str(&format!("  {}  {}\n", ascii_line, line));
+        }
         if line.len() > max_line_length {
             max_line_length = line.len();
         }
