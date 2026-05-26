@@ -6,7 +6,7 @@ use chrono::prelude::*;
 use colored::Colorize;
 use dirs;
 
-// some stuff is commented here cuz i'm not fixing it until v1.1 
+// some stuff is commented here cuz i'm not fixing it until v1.1
 struct Graphics {
     clear: String,
     partly_cloudy: String,
@@ -128,10 +128,18 @@ pub fn output(weather_data: weather::OpenMeteoResponse, air_quality_data: weathe
     }
 
     if !config.hide_location {
-        data.push_str(&format!("{}{} {} {} {}", ip_info.city.bold().bright_cyan(), ",".bold().bright_cyan(), ip_info.region.bold().bright_cyan(), "@", local_time.format("%H:%M").to_string().bold().bright_cyan()));
+        if config.use_color {
+            data.push_str(&format!("{}{} {} {} {}", ip_info.city.bold().bright_cyan(), ",".bold().bright_cyan(), ip_info.region.bold().bright_cyan(), "@", local_time.format("%H:%M").to_string().bold().bright_cyan()));
+        } else {
+            data.push_str(&format!("{} {} {} {} {}", ip_info.city, ",", ip_info.region, "@", local_time.format("%H:%M").to_string()));
+        }
         header_length = format!("{}, {} @ {}", ip_info.city, ip_info.region, local_time.format("%H:%M")).len();
     } else {
-        data.push_str(&format!("{} {} {}", "Location, Hidden".bright_cyan().bold(), "@", local_time.format("%H:%M").to_string().bold().bright_cyan()));
+        if config.use_color {
+            data.push_str(&format!("{} {} {}", "Location, Hidden".bold().bright_cyan(), "@", local_time.format("%H:%M").to_string().bold().bright_cyan()));
+        } else {
+            data.push_str(&format!("{} {} {}", "Location, Hidden", "@", local_time.format("%H:%M").to_string()));
+        }
         header_length = 24;
     }
     data.push_str("\n");
@@ -235,7 +243,12 @@ pub fn output(weather_data: weather::OpenMeteoResponse, air_quality_data: weathe
     }
 
     for (_index, line) in data.lines().enumerate() {
-        let ascii_line = icon.lines().nth(_index).unwrap_or("").bold().truecolor(4, 244, 214).to_string();
+        let ascii_line: String;
+        if config.use_color {
+            ascii_line = icon.lines().nth(_index).unwrap_or("").bold().truecolor(4, 244, 214).to_string();
+        } else {
+            ascii_line = icon.lines().nth(_index).unwrap_or("").to_string();
+        }
         if config.no_icon {
             output.push_str(&format!("  {}\n", line));
         } else {
