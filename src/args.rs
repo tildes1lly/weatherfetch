@@ -9,7 +9,6 @@ pub fn parse(args: Vec<String>) -> Option<config::Config> {
     let mut hide_location = current_config.hide_location;
     let mut use_imperial = current_config.use_imperial;
     let mut use_color = current_config.use_color;
-    let /*mut*/ custom_location = current_config.custom_location; // commenting mut prevents a compiler warning, removing in v1.1
     let mut no_icon = current_config.no_icon;
 
     if args.contains(&String::from("--hide-location")) {
@@ -42,6 +41,5 @@ pub fn parse(args: Vec<String>) -> Option<config::Config> {
         use_imperial: use_imperial,
         use_color: use_color,
         no_icon: no_icon,
-        custom_location: custom_location,
     })
 }

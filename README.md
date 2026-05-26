@@ -85,14 +85,11 @@ The config file should look something like:
   "hide_location": true,
   "use_imperial": true,
   "use_color": true,
-  "no_icon": false,
-  "custom_location": null
+  "no_icon": false
 }
 ```
 
 Each field in the config is the equivalent a custom argument, see Usage for more info.
-
-**NOTE: The custom_location field is currently unsupported and changing it will do literally nothing.**
 
 ## License
 
