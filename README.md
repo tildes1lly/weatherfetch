@@ -4,6 +4,8 @@ neofetch, but weather - A weather CLI written in Rust using the Open Meteo API.
 
 ![Screenshot 1](README_media/Screenshot_1.png)
 
+![Screenshot 2](README_media/Screenshot_2.png)
+
 ## Installation
 
 ### With Rust installed
@@ -65,13 +67,14 @@ weatherfetch supports a few custom arguments (**these will override whatever is 
 - `--use-imperial` / `--use-metric`. Whether to use imperial units or metric.
 - `--no-color` / `--color`. Whether or not the output should be colored.
 - `--no-icon` / `--icon`. Whether or not to show an ASCII icon next to the weather results.
+- `--show-forecast` / `-f`. Show the forecast of the next six days. Can be enabled by default in the config file.
 
 #### Using arguments
 
 If you do not know how to use custom arguments, you can use them by appending the argument to the weatherfetch command like so:
 
 ```bash
-weatherfetch --show-location --use-imperial --no-color --icon
+weatherfetch --show-location --use-imperial --no-color --icon --show-forecast
 ```
 
 ## Configuration
@@ -85,7 +88,8 @@ The config file should look something like:
   "hide_location": true,
   "use_imperial": true,
   "use_color": true,
-  "no_icon": false
+  "no_icon": false,
+  "forecast": true
 }
 ```
 
