@@ -9,6 +9,7 @@ pub struct Config {
     pub use_imperial: bool,
     pub use_color: bool,
     pub no_icon: bool,
+    pub forecast: bool,
 }
 
 pub fn defaults() -> Config {
@@ -17,6 +18,7 @@ pub fn defaults() -> Config {
         use_imperial: false,
         use_color: true,
         no_icon: false,
+        forecast: false,
     }
 }
 
@@ -66,6 +68,7 @@ pub fn gen_config() -> Config {
         use_imperial: use_imperial,
         use_color: true,
         no_icon: false,
+        forecast: false,
     };
     let json = serde_json::to_string_pretty(&config).expect("Failed to serialize config");
 

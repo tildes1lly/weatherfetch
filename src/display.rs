@@ -6,7 +6,12 @@ use chrono::prelude::*;
 use colored::Colorize;
 use dirs;
 
-// some stuff is commented here cuz i'm not fixing it until v1.1
+// some stuff is commented here cuz i'm not fixing it until v1.1 // [v1.1] she really thought she was adding precipitation icons in v1.1 :sob:
+// [v1.1] coming in v1.2 guys righttttt
+// [v1.1] i started dating my local weather nerd so that means we're revisiting this even though i really wanted it to Die a month ago :sob:
+// [v1.1] ily though mari <3
+
+// TODO: add ascii art for different weather conditions (rain, thunderstorm, snow/hail, etc.)
 
 struct Graphics {
     clear: String,
@@ -93,6 +98,16 @@ fn cloudcover_to_description(cloud_cover: f64) -> &'static str {
         _ => "He came early. He came late. He came when you least expected it.",
     }
 }
+fn cloudcover_to_consistent(cloud_cover: f64) -> &'static str {
+    match cloud_cover as u32 {
+        0..=10 =>   "    Clear    ",
+        11..=25 =>  "Mostly Clear ",
+        26..=50 =>  "Partly Cloudy",
+        51..=84 =>  "Mostly Cloudy",
+        85..=100 => "  Overcast   ",
+        _ =>        "?????????????",
+    }
+}
 fn should_you_bring_sunscreen(uv_index: f64) -> &'static str {
     match uv_index as u32 {
         0..=2 => "Maybe",
@@ -102,13 +117,14 @@ fn should_you_bring_sunscreen(uv_index: f64) -> &'static str {
         _ => "Stay inside. Run if you must. The children won't make it.",
     }
 }
-pub fn output(weather_data: weather::OpenMeteoResponse, air_quality_data: weather::AirQuality, local_time: DateTime<Local>, ip_info: location::IPInfo, config: config::Config) -> String {
+pub fn output(weather_data: weather::OpenMeteoResponse, air_quality_data: weather::AirQuality, forecast_data: weather::Forecast, local_time: DateTime<Local>, ip_info: location::IPInfo, config: config::Config) -> String {
 
     let mut data = String::new();
     let mut output = String::new();
     let mut heart_string = String::new();
     let mut final_string = String::new();
 
+    let forecast = forecast_data.daily;
 
     let graphics = Graphics::load();
 
@@ -250,20 +266,125 @@ pub fn output(weather_data: weather::OpenMeteoResponse, air_quality_data: weathe
         } else {
             ascii_line = icon.lines().nth(_index).unwrap_or("").to_string();
         }
-        if config.no_icon {
-            output.push_str(&format!("  {}\n", line));
+        if !config.forecast {
+            if config.no_icon {
+                output.push_str(&format!("  {}\n", line));
+            } else {
+                output.push_str(&format!("  {}  {}\n", ascii_line, line));
+            }
         } else {
-            output.push_str(&format!("  {}  {}\n", ascii_line, line));
+            if config.no_icon {
+                output.push_str(&format!("  {}\n", line));
+            } else {
+                output.push_str(&format!("                   {}  {}\n", ascii_line, line));
+            }
         }
         if line.len() > max_line_length {
             max_line_length = line.len();
         }
     }
-    
-    for _ in 0..max_line_length + 35 {
-        heart_string.push_str("♡");
+
+    let mut forecast_string = String::new();
+    forecast_string.push_str(&format!("      Today            Tomorrow         Overmorrow         In 3 Days         In 4 Days         In 5 Days         In 6 Days  \n"));
+             forecast_string.push_str("╔═════════════════╦═════════════════╦═════════════════╦═════════════════╦═════════════════╦═════════════════╦═════════════════╗\n");
+    forecast_string.push_str(&format!("║  {}  ║  {}  ║  {}  ║  {}  ║  {}  ║  {}  ║  {}  ║\n",
+        cloudcover_to_consistent(forecast.cloud_cover_mean[0]),
+        cloudcover_to_consistent(forecast.cloud_cover_mean[1]),
+        cloudcover_to_consistent(forecast.cloud_cover_mean[2]),
+        cloudcover_to_consistent(forecast.cloud_cover_mean[3]),
+        cloudcover_to_consistent(forecast.cloud_cover_mean[4]),
+        cloudcover_to_consistent(forecast.cloud_cover_mean[5]),
+        cloudcover_to_consistent(forecast.cloud_cover_mean[6]),
+    ));
+    forecast_string.push_str("╟─────────────────╫─────────────────╫─────────────────╫─────────────────╫─────────────────╫─────────────────╫─────────────────╢\n");
+    if config.use_imperial {
+        for i in 0..7 {
+            if c_to_f(forecast.temperature_max[i]).round() >= 100.0 {
+                forecast_string.push_str(&format!("║ High:    {}°F ", c_to_f(forecast.temperature_max[i]).round()));
+            } else if c_to_f(forecast.temperature_max[i]).round() < 10.0 && c_to_f(forecast.temperature_min[i]).round() > -10.0 {
+                forecast_string.push_str(&format!("║ High:       {}°F ", c_to_f(forecast.temperature_max[i]).round()));
+            } else {
+                forecast_string.push_str(&format!("║ High:      {}°F ", c_to_f(forecast.temperature_max[i]).round()));
+            }
+        }
+        forecast_string.push_str("║\n");
+        for i in 0..7 {
+            if c_to_f(forecast.temperature_min[i]).round() >= 100.0 {
+                forecast_string.push_str(&format!("║ Low:      {}°F ", c_to_f(forecast.temperature_min[i]).round()));
+            } else if c_to_f(forecast.temperature_min[i]).round() < 10.0 && c_to_f(forecast.temperature_min[i]).round() > -10.0 {
+                forecast_string.push_str(&format!("║ Low:        {}°F ", c_to_f(forecast.temperature_min[i]).round()));
+            } else {
+                forecast_string.push_str(&format!("║ Low:       {}°F ", c_to_f(forecast.temperature_min[i]).round()));
+            }
+        }
+        forecast_string.push_str("║\n");
+
+    } else {
+        for i in 0..7 {
+            if forecast.temperature_max[i].round() >= 100.0 {
+                forecast_string.push_str(&format!("║ High:    {}°C ", forecast.temperature_max[i].round()));
+            } else if forecast.temperature_max[i].round() < 10.0 && forecast.temperature_min[i].round() > -10.0 {
+                forecast_string.push_str(&format!("║ High:       {}°C ", forecast.temperature_max[i].round()));
+            } else {
+                forecast_string.push_str(&format!("║ High:      {}°C ", forecast.temperature_max[i].round()));
+            }
+        }
+        forecast_string.push_str("║\n");
+        for i in 0..7 {
+            if forecast.temperature_min[i].round() >= 100.0 {
+                forecast_string.push_str(&format!("║ Low:      {}°C ", forecast.temperature_min[i].round()));
+            } else if forecast.temperature_min[i].round() < 10.0 && forecast.temperature_min[i].round() > -10.0 {
+                forecast_string.push_str(&format!("║ Low:          {}°C ", forecast.temperature_min[i].round()));
+            } else {
+                forecast_string.push_str(&format!("║ Low:       {}°C ", forecast.temperature_min[i].round()));
+            }
+        }
+        forecast_string.push_str("║\n");
     }
-    final_string.push_str(&format!("\n{}\n\n{}{}\n", heart_string, output, heart_string));
+    forecast_string.push_str("╟─────────────────╫─────────────────╫─────────────────╫─────────────────╫─────────────────╫─────────────────╫─────────────────╢\n");
+    for i in 0..7 {
+        if forecast.precipitation_probability[1].round() == 100.0 {
+            forecast_string.push_str(&format!("║ Precip:    100% "));
+        } else if forecast.precipitation_probability[i].round() >= 10.0 {
+            forecast_string.push_str(&format!("║ Precip:     {}% ", forecast.precipitation_probability[i].round()));
+        } else {
+            forecast_string.push_str(&format!("║ Precip:     {}% ", forecast.precipitation_probability[i].round()));
+        }
+    }
+    forecast_string.push_str("║\n╟─────────────────╫─────────────────╫─────────────────╫─────────────────╫─────────────────╫─────────────────╫─────────────────╢\n");
+    forecast_string.push_str(&format!("║ Sunrise:  {} ║ Sunrise:  {} ║ Sunrise:  {} ║ Sunrise:  {} ║ Sunrise:  {} ║ Sunrise:  {} ║ Sunrise:  {} ║\n", 
+    forecast.sunrise[0].split('T').nth(1).unwrap_or(&forecast.sunrise[0]),
+    forecast.sunrise[1].split('T').nth(1).unwrap_or(&forecast.sunrise[1]),
+    forecast.sunrise[2].split('T').nth(1).unwrap_or(&forecast.sunrise[2]),
+    forecast.sunrise[3].split('T').nth(1).unwrap_or(&forecast.sunrise[3]),
+    forecast.sunrise[4].split('T').nth(1).unwrap_or(&forecast.sunrise[4]),
+    forecast.sunrise[5].split('T').nth(1).unwrap_or(&forecast.sunrise[5]),
+    forecast.sunrise[6].split('T').nth(1).unwrap_or(&forecast.sunrise[6])
+    ));
+    forecast_string.push_str(&format!("║ Sunset:   {} ║ Sunset:   {} ║ Sunset:   {} ║ Sunset:   {} ║ Sunset:   {} ║ Sunset:   {} ║ Sunset:   {} ║\n",
+    forecast.sunset[0].split('T').nth(1).unwrap_or(&forecast.sunset[0]),
+    forecast.sunset[1].split('T').nth(1).unwrap_or(&forecast.sunset[1]),
+    forecast.sunset[2].split('T').nth(1).unwrap_or(&forecast.sunset[2]),
+    forecast.sunset[3].split('T').nth(1).unwrap_or(&forecast.sunset[3]),
+    forecast.sunset[4].split('T').nth(1).unwrap_or(&forecast.sunset[4]),
+    forecast.sunset[5].split('T').nth(1).unwrap_or(&forecast.sunset[5]),
+    forecast.sunset[6].split('T').nth(1).unwrap_or(&forecast.sunset[6])
+    ));
+    forecast_string.push_str("╚═════════════════╩═════════════════╩═════════════════╩═════════════════╩═════════════════╩═════════════════╩═════════════════╝\n");
+    
+    if !config.forecast {
+        for _ in 0..max_line_length + 35 {
+            heart_string.push_str("♡");
+        }
+    } else {
+        heart_string.push_str("♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡");
+    }
+
+    if config.forecast {
+        final_string.push_str(&format!("\n{}\n\n{}{}\n{}\n", heart_string, output, forecast_string, heart_string));
+    } else {
+        final_string.push_str(&format!("\n{}\n\n{}{}\n", heart_string, output, heart_string));
+    }
 
     final_string
 }

@@ -10,6 +10,7 @@ pub fn parse(args: Vec<String>) -> Option<config::Config> {
     let mut use_imperial = current_config.use_imperial;
     let mut use_color = current_config.use_color;
     let mut no_icon = current_config.no_icon;
+    let mut forecast = current_config.forecast;
 
     if args.contains(&String::from("--hide-location")) {
         hide_location = true;
@@ -35,11 +36,15 @@ pub fn parse(args: Vec<String>) -> Option<config::Config> {
     if args.contains(&String::from("--icon")) {
         no_icon = false;
     }
+    if args.contains(&String::from("--show-forecast")) || args.contains(&String::from("-f")) {
+        forecast = true;
+    }
 
     Some(config::Config {
         hide_location: hide_location,
         use_imperial: use_imperial,
         use_color: use_color,
         no_icon: no_icon,
+        forecast: forecast,
     })
 }
