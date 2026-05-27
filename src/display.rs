@@ -7,6 +7,7 @@ use colored::Colorize;
 use dirs;
 
 // some stuff is commented here cuz i'm not fixing it until v1.1
+
 struct Graphics {
     clear: String,
     partly_cloudy: String,
