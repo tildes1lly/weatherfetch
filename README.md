@@ -2,6 +2,8 @@
 
 neofetch, but weather - A weather CLI written in Rust using the Open Meteo API.
 
+dedicated to my weather nerd wife mari <3
+
 ![Screenshot 1](README_media/Screenshot_1.png)
 
 ![Screenshot 2](README_media/Screenshot_2.png)
@@ -79,7 +81,7 @@ weatherfetch --show-location --use-imperial --no-color --icon --show-forecast
 
 ## Configuration
 
-On your first usage, weatherfetch will prompt you with options and then generate a config file. If you would like to change it, you can find the file at `~/.config/weatherfetch/config.json` on Linux and MacOS and `%APPDATA%\weatherfetch\config.json` on Windows.
+On your first usage, weatherfetch will prompt you with options and then generate a config file. If you would like to change it, you can find the file at `~/.config/weatherfetch/config.json` on Linux and `%APPDATA%\weatherfetch\config.json` on Windows. God spare your soul if you want to find the config file on MacOS. Mari said hers was at `~/Library/Application Support/weatherfetch/config.json`. Yours may or may not be there, I have no idea.
 
 The config file should look something like:
 
