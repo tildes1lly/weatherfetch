@@ -32,7 +32,11 @@ pub fn get() -> Option<Config> {
                 return Some(config);
             } else {
                 println!("Error parsing config file! this is almost certainly caused by a formatting issue in config.json.");
-                println!("Falling back to hardcoded defaults...");
+                println!("Regenerating config file...");
+                println!("\n{} {}", "If you want to keep your old config, exit".bright_red(), "now.".bright_red().bold());
+                println!("\nWaiting 3 seconds before regenerating config...");
+                std::thread::sleep(std::time::Duration::from_secs(3));
+                return None;
             }
         } else {
             return None; // Option<Config> will save us all
@@ -49,7 +53,7 @@ pub fn gen_config() -> Config {
     let mut raw_hidden = String::new();
     let mut raw_imperial = String::new();
 
-    println!("{}", "No config file found... falling back to setup wizard".bold());
+    println!("\n{} {} {}", "Welcome to the", "weatherfetch".bright_blue().bold(), "setup wizard!");
 
     println!("{}", "\nHide your location? (y/N) ".bold());
     std::io::stdin().read_line(&mut raw_hidden).expect("Failed to read input");
@@ -84,7 +88,7 @@ pub fn gen_config() -> Config {
     std::fs::write(config_path.join("ascii/cloudy.txt"), CLOUDY_ART).expect("Writing cloudy.txt failed...");
     
     println!("{}", "Done!".bold());
-    println!("\n{}\n{} {} {}\n{}\n", &"♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡", &"weatherfetch".bold().bright_cyan(), &"made with ♡ by", &"tildesilly <3".bold().bright_magenta(), &"♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡");
+    println!("\n{}\n{} {} {} {}\n{} {} {}\n{}\n", &"♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡", &"weatherfetch".bold().bright_cyan(), &"made with ♡ by", &"tildesilly".bold().bright_magenta(), &"<3".bright_magenta(), &"dedicated to my weather nerd wife", &"mari".bold().blue(), &"<3".bright_magenta(), &"♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡");
 
     config
 }
