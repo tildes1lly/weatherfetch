@@ -343,7 +343,7 @@ pub fn output(weather_data: weather::OpenMeteoResponse, air_quality_data: weathe
     }
     forecast_string.push_str("╟─────────────────╫─────────────────╫─────────────────╫─────────────────╫─────────────────╫─────────────────╫─────────────────╢\n");
     for i in 0..7 {
-        if forecast.precipitation_probability[1].round() == 100.0 {
+        if forecast.precipitation_probability[i].round() == 100.0 {
             forecast_string.push_str(&format!("║ Precip:    100% "));
         } else if forecast.precipitation_probability[i].round() >= 10.0 {
             forecast_string.push_str(&format!("║ Precip:     {}% ", forecast.precipitation_probability[i].round()));
