@@ -1,12 +1,32 @@
 # weatherfetch
 
-neofetch, but weather - A weather CLI written in Rust using the Open Meteo API.
+neofetch, but weather - A feature-rich weather CLI written in Rust using the Open Meteo API.
 
 dedicated to my weather nerd wife mari <3
 
 ![Screenshot 1](README_media/Screenshot_1.png)
 
 ![Screenshot 2](README_media/Screenshot_2.png)
+
+## Table of Contents
+
+- [Features](#features)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Custom Arguments](#custom-arguments)
+- [Configuration](#configuration)
+- [Troubleshooting](#troubleshooting)
+- [License](#license)
+
+## Features
+
+- Fetches weather data from the Open Meteo API.
+- Automatically detects your location based on your IP address (or from a configured custom location).
+- Displays current weather conditions, including temperature, humidity, wind speed, and more.
+- Optionally displays a 6-day forecast.
+- Customizable output with options for imperial/metric units, colored output, and ASCII icons.
+- Fully configurable via a JSON config file.
+- Cross-platform support (Linux, Windows, MacOS, and any other platforms that support Rust).
 
 ## Installation
 
@@ -51,6 +71,14 @@ Download a [rust installer](https://rustup.rs/), then run:
 cargo install --git https://github.com/tildes1lly/weatherfetch
 ```
 
+## Updating
+
+To update weatherfetch, simply run the install command again. It will automatically overwrite the old version with the new one.
+
+```bash
+cargo install --git https://github.com/tildes1lly/weatherfetch
+```
+
 ## Usage
 
 Once weatherfetch is installed, it can be ran like so:
@@ -63,20 +91,23 @@ weatherfetch
 
 ### Custom arguments
 
-weatherfetch supports a few custom arguments (**these will override whatever is set in your config file**)
+weatherfetch supports a number of custom arguments (**these will override whatever is set in your config file**)
 
 - `--hide-location` / `--show-location`. Hides or shows your location in the header.
 - `--use-imperial` / `--use-metric`. Whether to use imperial units or metric.
 - `--no-color` / `--color`. Whether or not the output should be colored.
 - `--no-icon` / `--icon`. Whether or not to show an ASCII icon next to the weather results.
 - `--show-forecast` / `-f`. Show the forecast of the next six days. Can be enabled by default in the config file.
+- `--hide-forecast`. Hides the forecast if you have `"forecast": true` in your config.
+- `--lat`. Set a custom latitude to fetch the weather from. **YOU MUST ALSO SET A LONGITUDE VALUE VIA `--lon`**
+- `--lon`. Set a custom longitude to fetch the weather from. **YOU MUST ALSO SET A LATITUDE VALUE VIA `--lat`**
 
 #### Using arguments
 
 If you do not know how to use custom arguments, you can use them by appending the argument to the weatherfetch command like so:
 
 ```bash
-weatherfetch --show-location --use-imperial --no-color --icon --show-forecast
+weatherfetch --show-location --use-imperial --no-color --icon --show-forecast --lat 41.482 --lon -82.683
 ```
 
 ## Configuration
@@ -91,11 +122,38 @@ The config file should look something like:
   "use_imperial": true,
   "use_color": true,
   "no_icon": false,
-  "forecast": true
+  "forecast": false,
+  "custom_location": null
 }
 ```
 
-Each field in the config is the equivalent a custom argument, see Usage for more info.
+Each field in the config is the equivalent a custom argument, see [Usage](#usage) for more info. You are welcome to manually edit this config file whenever you'd like, but be mindful of the fact that weatherfetch will invalidate the config file if it is not properly formatted or lacks certain fields. If you want to set a custom location, you can replace `null` with an object like so:
+
+```json
+{
+  "hide_location": true,
+  "use_imperial": true,
+  "use_color": true,
+  "no_icon": false,
+  "forecast": false,
+  "custom_location": {
+    "lat": 41.482,
+    "lon": -82.683
+  }
+}
+```
+
+## Troubleshooting
+
+### Incorrect location
+
+weatherfetch uses your IP address to determine your location. If you are using a VPN, proxy, or have an ISP that routes traffic in a weird way, weatherfetch may get your location wrong. To fix this, you can set a custom location in the config file or by using the `--lat` and `--lon` arguments. See Configuration and Usage for more info.
+
+### Broken config file
+
+There are two possible reasons for this. The simplest one is that you updated weatherfetch to a commit before version v1.1.1. Versions v1.1.1 and above fix the issues with the config file breaking on update via rerunning the setup wizard. Updating weatherfetch should fix this issue, if that doesn't work or you do not want to update, you can delete the config file and rerun weatherfetch to generate a new one. The other is that you manually edited the config file and made a formatting error. If this is the case, you can either fix the formatting error or delete the config file and rerun weatherfetch to generate a new one.
+
+If you are having other issues with weatherfetch, please open an issue on the [GitHub repository](https://github.com/tildes1lly/weatherfetch/issues).
 
 ## License
 
