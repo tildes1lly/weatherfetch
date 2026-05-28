@@ -4,12 +4,19 @@ use serde::Serialize;
 use colored::Colorize;
 
 #[derive(Deserialize, Serialize)]
+pub struct CustomLocation {
+    pub lat: f64,
+    pub lon: f64,
+}
+
+#[derive(Deserialize, Serialize)]
 pub struct Config {
     pub hide_location: bool,
     pub use_imperial: bool,
     pub use_color: bool,
     pub no_icon: bool,
-    pub forecast: bool,
+    pub show_forecast: bool,
+    pub custom_location: Option<CustomLocation>,
 }
 
 pub fn defaults() -> Config {
@@ -18,7 +25,8 @@ pub fn defaults() -> Config {
         use_imperial: false,
         use_color: true,
         no_icon: false,
-        forecast: false,
+        show_forecast: false,
+        custom_location: None,
     }
 }
 
@@ -72,7 +80,8 @@ pub fn gen_config() -> Config {
         use_imperial: use_imperial,
         use_color: true,
         no_icon: false,
-        forecast: false,
+        show_forecast: false,
+        custom_location: None,
     };
     let json = serde_json::to_string_pretty(&config).expect("Failed to serialize config");
 

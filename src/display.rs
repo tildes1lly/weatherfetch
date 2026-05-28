@@ -266,7 +266,7 @@ pub fn output(weather_data: weather::OpenMeteoResponse, air_quality_data: weathe
         } else {
             ascii_line = icon.lines().nth(_index).unwrap_or("").to_string();
         }
-        if !config.forecast {
+        if !config.show_forecast {
             if config.no_icon {
                 output.push_str(&format!("  {}\n", line));
             } else {
@@ -372,7 +372,7 @@ pub fn output(weather_data: weather::OpenMeteoResponse, air_quality_data: weathe
     ));
     forecast_string.push_str("╚═════════════════╩═════════════════╩═════════════════╩═════════════════╩═════════════════╩═════════════════╩═════════════════╝\n");
     
-    if !config.forecast {
+    if !config.show_forecast {
         for _ in 0..max_line_length + 35 {
             heart_string.push_str("♡");
         }
@@ -380,7 +380,7 @@ pub fn output(weather_data: weather::OpenMeteoResponse, air_quality_data: weathe
         heart_string.push_str("♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡");
     }
 
-    if config.forecast {
+    if config.show_forecast {
         final_string.push_str(&format!("\n{}\n\n{}{}\n{}\n", heart_string, output, forecast_string, heart_string));
     } else {
         final_string.push_str(&format!("\n{}\n\n{}{}\n", heart_string, output, heart_string));

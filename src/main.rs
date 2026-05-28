@@ -15,9 +15,24 @@ fn main() {
     let raw_config = args::parse(args);
     let config = raw_config.unwrap_or_else(|| config::gen_config());
 
-    let ip_info = location::fetch_ip_info().expect("Failed to fetch IP info");
-    let lat = ip_info.latitude;
-    let lon = ip_info.longitude;
+    let lat;
+    let lon;
+    
+    let mut ip_info: location::IPInfo = location::IPInfo { 
+        latitude: 666.0, 
+        longitude: 666.0,
+        city: String::from("Custom"),
+        region: String::from("Location") 
+    };
+
+    if let Some(custom_location) = &config.custom_location {
+        lat = custom_location.lat;
+        lon = custom_location.lon;
+    } else {
+        ip_info = location::fetch_ip_info().expect("Failed to fetch IP info");
+        lat = ip_info.latitude;
+        lon = ip_info.longitude;
+    }
 
     let open_meteo_response = weather::fetch(lat, lon).expect("Failed to fetch weather data");
     let air_quality_response = weather::fetch_air_quality(lat, lon).expect("Failed to fetch air quality data");
