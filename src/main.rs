@@ -5,6 +5,20 @@ mod location;
 mod weather;
 
 use chrono::prelude::*;
+use reqwest;
+use serde::Deserialize;
+
+#[derive(Deserialize)]
+struct CustomLocation {
+    city: String,
+    #[serde(rename = "state")]
+    region: String,
+}
+
+#[derive(Deserialize)]
+struct NominatimResponse {
+    address: CustomLocation,
+}
 
 fn main() {
 
@@ -28,6 +42,19 @@ fn main() {
     if let Some(custom_location) = &config.custom_location {
         lat = custom_location.lat;
         lon = custom_location.lon;
+        let client = reqwest::blocking::Client::builder()
+            .user_agent("weatherfetch/1.1.4")
+            .build()
+            .unwrap();
+        let url: String = format!("https://nominatim.openstreetmap.org/reverse?lat={}&lon={}&format=json", lat, lon);
+        if let Ok(response) = client.get(&url).send().and_then(|r| r.json::<NominatimResponse>()) {
+            ip_info = location::IPInfo {
+                latitude: lat,
+                longitude: lon,
+                city: response.address.city,
+                region: response.address.region,
+            };
+        }
     } else {
         ip_info = location::fetch_ip_info().expect("Failed to fetch IP info");
         lat = ip_info.latitude;
