@@ -52,7 +52,7 @@ fn main() {
         lat = custom_location.lat;
         lon = custom_location.lon;
         let client = reqwest::blocking::Client::builder()
-            .user_agent("weatherfetch/1.2.2")
+            .user_agent("weatherfetch/1.2.3")
             .build()
             .unwrap();
         let url: String = format!("https://nominatim.openstreetmap.org/reverse?lat={}&lon={}&format=json&accept-language=en", lat, lon);
@@ -87,6 +87,9 @@ fn main() {
     let open_meteo_response = weather::fetch(lat, lon).expect("Failed to fetch weather data");
     let air_quality_response = weather::fetch_air_quality(lat, lon).expect("Failed to fetch air quality data");
     let forecast_response = weather::fetch_forecast(lat, lon).expect("Failed to fetch forecast data");
+
+    println!("Fetching: {}, 
+    {}", lat, lon); // debug
 
     println!("{}", display::output(open_meteo_response, air_quality_response, forecast_response, Local::now(), ip_info, config));
 }

@@ -12,8 +12,17 @@ pub fn parse(args: Vec<String>) -> Option<config::Config> {
     let mut no_icon = current_config.no_icon;
     let mut show_forecast = current_config.show_forecast;
     let mut is_custom_location_set = current_config.custom_location.is_some();
-    let mut lon: f64 = 0.0;
-    let mut lat: f64 = 0.0;
+
+    let mut lon: f64;
+    let mut lat: f64;
+
+    if is_custom_location_set {
+        lat = current_config.custom_location.as_ref().unwrap().lat;
+        lon = current_config.custom_location.as_ref().unwrap().lon;
+    } else {
+        lat = 0.0;
+        lon = 0.0;
+    }
 
     if args.contains(&String::from("--hide-location")) {
         hide_location = true;
