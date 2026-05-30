@@ -25,7 +25,8 @@ dedicated to my weather nerd wife mari <3
 - Displays current weather conditions, including temperature, humidity, wind speed, and more.
 - Optionally displays a 6-day forecast.
 - Customizable output with options for imperial/metric units, colored output, and ASCII icons.
-- Fully configurable via a JSON config file.
+- Custom location support using latitude and longitude.
+- Fully configurable via a JSON config file or command-line arguments.
 - Cross-platform support (Linux, Windows, MacOS, and any other platforms that support Rust).
 
 ## Installation
