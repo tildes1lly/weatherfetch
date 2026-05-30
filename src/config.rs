@@ -56,6 +56,9 @@ pub fn get() -> Option<Config> {
 const CLEAR_ART: &str = include_str!("ascii/clear.txt");
 const PARTLY_CLOUDY_ART: &str = include_str!("ascii/partly_cloudy.txt");
 const CLOUDY_ART: &str = include_str!("ascii/cloudy.txt");
+const RAINING_ART: &str = include_str!("ascii/raining.txt");
+const THUNDERSTORM_ART: &str = include_str!("ascii/thunderstorm.txt");
+const SNOW_HAIL_ART: &str = include_str!("ascii/snow_hail.txt");
 
 pub fn gen_config() -> Config {
     let mut raw_hidden = String::new();
@@ -95,6 +98,9 @@ pub fn gen_config() -> Config {
     std::fs::write(config_path.join("ascii/clear.txt"), CLEAR_ART).expect("Writing clear.txt failed...");
     std::fs::write(config_path.join("ascii/partly_cloudy.txt"), PARTLY_CLOUDY_ART).expect("Writing partly_cloudy.txt failed...");
     std::fs::write(config_path.join("ascii/cloudy.txt"), CLOUDY_ART).expect("Writing cloudy.txt failed...");
+    std::fs::write(config_path.join("ascii/raining.txt"), RAINING_ART).expect("Writing raining.txt failed...");
+    std::fs::write(config_path.join("ascii/thunderstorm.txt"), THUNDERSTORM_ART).expect("Writing thunderstorm.txt failed...");
+    std::fs::write(config_path.join("ascii/snow_hail.txt"), SNOW_HAIL_ART).expect("Writing snow_hail.txt failed...");
     
     println!("{}", "Done!".bold());
     println!("\n{}\n{} {} {} {}\n{} {} {}\n{}\n", &"♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡", &"weatherfetch".bold().bright_cyan(), &"made with ♡ by", &"tildesilly".bold().bright_magenta(), &"<3".bright_magenta(), &"dedicated to my weather nerd wife", &"mari".bold().blue(), &"<3".bright_magenta(), &"♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡♡");

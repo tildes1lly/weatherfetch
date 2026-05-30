@@ -81,6 +81,17 @@ pub struct Forecast {
     pub daily: DailyForecast,
 }
 
+#[derive(Deserialize)]
+pub struct WeatherCode {
+    #[serde(rename = "weather_code")]
+    pub code: i32,
+}
+
+#[derive(Deserialize)]
+pub struct WeatherCodeResponse {
+    pub current: WeatherCode,
+}
+
 pub fn fetch(lat: f64, lon: f64) -> Result<OpenMeteoResponse, reqwest::Error> {
     let url = format!(
         "https://api.open-meteo.com/v1/forecast?latitude={}&longitude={}&daily=sunrise,sunset,uv_index_max,temperature_2m_max,temperature_2m_min,precipitation_probability_max&hourly=visibility,dew_point_2m&current=wind_speed_10m,wind_direction_10m,surface_pressure,precipitation,temperature_2m,relative_humidity_2m,apparent_temperature,cloud_cover&timezone=auto&forecast_days=1",
@@ -105,5 +116,14 @@ pub fn fetch_forecast(lat: f64, lon: f64) -> Result<Forecast, reqwest::Error> {
         lat, lon
     );
     let response = reqwest::blocking::get(&url)?.json::<Forecast>()?;
+    Ok(response)
+}
+
+pub fn fetch_weather_code(lat: f64, lon: f64) -> Result<WeatherCodeResponse, reqwest::Error> {
+    let url = format!(
+        "https://api.open-meteo.com/v1/forecast?latitude={}&longitude={}&current=weather_code&timezone=auto&forecast_days=1",
+        lat, lon
+    );
+    let response = reqwest::blocking::get(&url)?.json::<WeatherCodeResponse>()?;
     Ok(response)
 }

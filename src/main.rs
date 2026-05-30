@@ -87,6 +87,7 @@ fn main() {
     let open_meteo_response = weather::fetch(lat, lon).expect("Failed to fetch weather data");
     let air_quality_response = weather::fetch_air_quality(lat, lon).expect("Failed to fetch air quality data");
     let forecast_response = weather::fetch_forecast(lat, lon).expect("Failed to fetch forecast data");
+    let weather_code_response = weather::fetch_weather_code(lat, lon).expect("Failed to fetch weather code data");
 
-    println!("{}", display::output(open_meteo_response, air_quality_response, forecast_response, Local::now(), ip_info, config));
+    println!("{}", display::output(open_meteo_response, air_quality_response, forecast_response, weather_code_response, Local::now(), ip_info, config));
 }

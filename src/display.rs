@@ -6,20 +6,13 @@ use chrono::prelude::*;
 use colored::Colorize;
 use dirs;
 
-// some stuff is commented here cuz i'm not fixing it until v1.1 // [v1.1] she really thought she was adding precipitation icons in v1.1 :sob:
-// [v1.1] coming in v1.2 guys righttttt
-// [v1.1] i started dating my local weather nerd so that means we're revisiting this even though i really wanted it to Die a month ago :sob:
-// [v1.1] ily though mari <3
-
-// TODO: add ascii art for different weather conditions (rain, thunderstorm, snow/hail, etc.)
-
 struct Graphics {
     clear: String,
     partly_cloudy: String,
     cloudy: String,
-    /*raining: String,
+    raining: String,
     thunderstorm: String,
-    snow_hail: String,*/
+    snow_hail: String,
 }
 
 impl Graphics {
@@ -29,9 +22,9 @@ impl Graphics {
             clear: std::fs::read_to_string(ascii_path.join("clear.txt")).expect("Failed to read ascii/clear.txt"),
             partly_cloudy: std::fs::read_to_string(ascii_path.join("partly_cloudy.txt")).expect("Failed to read ascii/partly_cloudy.txt"),
             cloudy: std::fs::read_to_string(ascii_path.join("cloudy.txt")).expect("Failed to read ascii/cloudy.txt"),
-            /*raining: std::fs::read_to_string("src/ascii/raining.txt").expect("Failed to read ascii/raining.txt"),
+            raining: std::fs::read_to_string("src/ascii/raining.txt").expect("Failed to read ascii/raining.txt"),
             thunderstorm: std::fs::read_to_string("src/ascii/thunderstorm.txt").expect("Failed to read ascii/thunderstorm.txt"),
-            snow_hail: std::fs::read_to_string("src/ascii/snow_hail.txt").expect("Failed to read ascii/snow_hail.txt"),*/
+            snow_hail: std::fs::read_to_string("src/ascii/snow_hail.txt").expect("Failed to read ascii/snow_hail.txt"),
         }
     }
 }
@@ -117,7 +110,7 @@ fn should_you_bring_sunscreen(uv_index: f64) -> &'static str {
         _ => "Stay inside. Run if you must. The children won't make it.",
     }
 }
-pub fn output(weather_data: weather::OpenMeteoResponse, air_quality_data: weather::AirQuality, forecast_data: weather::Forecast, local_time: DateTime<Local>, ip_info: location::IPInfo, config: config::Config) -> String {
+pub fn output(weather_data: weather::OpenMeteoResponse, air_quality_data: weather::AirQuality, forecast_data: weather::Forecast, weather_code_data: weather::WeatherCodeResponse, local_time: DateTime<Local>, ip_info: location::IPInfo, config: config::Config) -> String {
 
     let mut data = String::new();
     let mut output = String::new();
@@ -135,13 +128,33 @@ pub fn output(weather_data: weather::OpenMeteoResponse, air_quality_data: weathe
     let header_length: usize;
     let mut max_line_length: usize = 0;
 
-    let icon: String;
-    if weather_data.current.sky_condition_num <= 25 as f64 {
-        icon = graphics.clear;
-    } else if weather_data.current.sky_condition_num <= 50 as f64 {
-        icon = graphics.partly_cloudy;
+    let icon: String; // oh my god this should have been a match statement but im lazy as fuck lmao :sob: 
+    if weather_code_data.current.code >= 50 && weather_code_data.current.code <= 55 {
+        icon = graphics.raining;
+    } else if weather_code_data.current.code >= 58 && weather_code_data.current.code <= 67 {
+        icon = graphics.raining;
+    } else if weather_code_data.current.code >= 80 && weather_code_data.current.code <= 82 {
+        icon = graphics.raining;
+    } else if weather_code_data.current.code >= 91 && weather_code_data.current.code <= 92 {
+        icon = graphics.raining;
+    } else if weather_code_data.current.code >= 95 && weather_code_data.current.code <= 96 {
+        icon = graphics.thunderstorm;
+    } else if weather_code_data.current.code >= 56 && weather_code_data.current.code <= 57 {
+        icon = graphics.snow_hail;
+    } else if weather_code_data.current.code >= 71 && weather_code_data.current.code <= 77 {
+        icon = graphics.snow_hail;
+    } else if weather_code_data.current.code >= 83 && weather_code_data.current.code <= 90 {
+        icon = graphics.snow_hail;
+    } else if weather_code_data.current.code >= 93 && weather_code_data.current.code <= 94 {
+        icon = graphics.snow_hail;
     } else {
-        icon = graphics.cloudy;
+        if weather_data.current.sky_condition_num <= 25 as f64 {
+            icon = graphics.clear;
+        } else if weather_data.current.sky_condition_num <= 50 as f64 {
+            icon = graphics.partly_cloudy;
+        } else {
+            icon = graphics.cloudy;
+        }
     }
 
     if !config.hide_location {
