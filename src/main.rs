@@ -10,9 +10,18 @@ use serde::Deserialize;
 
 #[derive(Deserialize)]
 struct CustomLocation {
-    city: String,
-    #[serde(rename = "state")]
-    region: String,
+    city: Option<String>,
+    town: Option<String>,
+    county: Option<String>,
+    village: Option<String>,
+    municipality: Option<String>,
+    hamlet: Option<String>,
+    quarter: Option<String>,
+
+    state: Option<String>,
+    region: Option<String>,
+    province: Option<String>,
+    country: Option<String>,
 }
 
 #[derive(Deserialize)]
@@ -33,8 +42,8 @@ fn main() {
     let lon;
     
     let mut ip_info: location::IPInfo = location::IPInfo { 
-        latitude: 666.0, 
-        longitude: 666.0,
+        latitude: 66.6, 
+        longitude: 66.6,
         city: String::from("Custom"),
         region: String::from("Location") 
     };
@@ -43,16 +52,30 @@ fn main() {
         lat = custom_location.lat;
         lon = custom_location.lon;
         let client = reqwest::blocking::Client::builder()
-            .user_agent("weatherfetch/1.2.1")
+            .user_agent("weatherfetch/1.2.2")
             .build()
             .unwrap();
-        let url: String = format!("https://nominatim.openstreetmap.org/reverse?lat={}&lon={}&format=json", lat, lon);
+        let url: String = format!("https://nominatim.openstreetmap.org/reverse?lat={}&lon={}&format=json&accept-language=en", lat, lon);
         if let Ok(response) = client.get(&url).send().and_then(|r| r.json::<NominatimResponse>()) {
+            let city = response.address.city
+                .or(response.address.town)
+                .or(response.address.village)
+                .or(response.address.municipality)
+                .or(response.address.county)
+                .or(response.address.hamlet)
+                .or(response.address.quarter)
+                .unwrap_or(String::from("Unknown"));
+
+            let region = response.address.state
+                .or(response.address.region)
+                .or(response.address.province)
+                .or(response.address.country)
+                .unwrap_or(String::from("Unknown"));
             ip_info = location::IPInfo {
                 latitude: lat,
                 longitude: lon,
-                city: response.address.city,
-                region: response.address.region,
+                city: city,
+                region: region,
             };
         }
     } else {
