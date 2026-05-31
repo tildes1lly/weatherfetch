@@ -23,7 +23,33 @@ pub fn parse(args: Vec<String>) -> Option<config::Config> {
         lat = 0.0;
         lon = 0.0;
     }
-
+    if args.contains(&String::from("--help")) || args.contains(&String::from("-h")) {
+        println!("Usage: weatherfetch [OPTIONS]");
+        println!("\nOptions:");
+        println!("  --hide-location           Hide location information");
+        println!("  --show-location           Show location information");
+        println!("  --use-imperial            Use imperial units (Fahrenheit, mph, etc.)");
+        println!("  --use-metric              Use metric units (Celsius, km/h, etc.)");
+        println!("  --no-color                Disable colored output");
+        println!("  --color                   Enable colored output");
+        println!("  --no-icon                 Disable weather icons");
+        println!("  --icon                    Enable weather icons");
+        println!("  --show-forecast, -f       Show forecast information");
+        println!("  --hide-forecast           Hide forecast information");
+        println!("  --lat <latitude>          Set custom latitude for weather data");
+        println!("  --lon <longitude>         Set custom longitude for weather data");
+        return Some(config::Config {
+            hide_location: false,
+            use_imperial: false,
+            use_color: false,
+            no_icon: false,
+            show_forecast: false,
+            custom_location: Some(config::CustomLocation {
+                lat: 0.0,
+                lon: 0.0,
+            }),
+        });
+    }
     if args.contains(&String::from("--hide-location")) {
         hide_location = true;
     }

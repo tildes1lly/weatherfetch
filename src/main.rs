@@ -38,6 +38,12 @@ fn main() {
     let raw_config = args::parse(args);
     let config = raw_config.unwrap_or_else(|| config::gen_config());
 
+    if config.custom_location.is_some() {
+        if config.custom_location.as_ref().unwrap().lat == 0.0 && config.custom_location.as_ref().unwrap().lon == 0.0 {
+            return;
+        }
+    }
+
     let lat;
     let lon;
     
@@ -52,7 +58,7 @@ fn main() {
         lat = custom_location.lat;
         lon = custom_location.lon;
         let client = reqwest::blocking::Client::builder()
-            .user_agent("weatherfetch/1.3.0")
+            .user_agent("weatherfetch/1.3.1")
             .build()
             .unwrap();
         let url: String = format!("https://nominatim.openstreetmap.org/reverse?lat={}&lon={}&format=json&accept-language=en", lat, lon);

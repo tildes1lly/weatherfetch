@@ -94,6 +94,7 @@ weatherfetch
 
 weatherfetch supports a number of custom arguments (**these will override whatever is set in your config file**)
 
+- `--help` / `-h`. Show the help message and exit.
 - `--hide-location` / `--show-location`. Hides or shows your location in the header.
 - `--use-imperial` / `--use-metric`. Whether to use imperial units or metric.
 - `--no-color` / `--color`. Whether or not the output should be colored.
