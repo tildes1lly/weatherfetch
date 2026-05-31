@@ -22,9 +22,9 @@ impl Graphics {
             clear: std::fs::read_to_string(ascii_path.join("clear.txt")).expect("Failed to read ascii/clear.txt"),
             partly_cloudy: std::fs::read_to_string(ascii_path.join("partly_cloudy.txt")).expect("Failed to read ascii/partly_cloudy.txt"),
             cloudy: std::fs::read_to_string(ascii_path.join("cloudy.txt")).expect("Failed to read ascii/cloudy.txt"),
-            raining: std::fs::read_to_string("src/ascii/raining.txt").expect("Failed to read ascii/raining.txt"),
-            thunderstorm: std::fs::read_to_string("src/ascii/thunderstorm.txt").expect("Failed to read ascii/thunderstorm.txt"),
-            snow_hail: std::fs::read_to_string("src/ascii/snow_hail.txt").expect("Failed to read ascii/snow_hail.txt"),
+            raining: std::fs::read_to_string(ascii_path.join("raining.txt")).expect("Failed to read ascii/raining.txt"),
+            thunderstorm: std::fs::read_to_string(ascii_path.join("thunderstorm.txt")).expect("Failed to read ascii/thunderstorm.txt"),
+            snow_hail: std::fs::read_to_string(ascii_path.join("snow_hail.txt")).expect("Failed to read ascii/snow_hail.txt"),
         }
     }
 }
