@@ -1,10 +1,39 @@
 use crate::config;
 
 pub fn parse(args: Vec<String>) -> Option<config::Config> {
-    let current_config = match config::get() {
-        Some(config) => config,
-        None => return None,
-    };
+    let mut custom_profile: Option<config::Config> = None;
+
+    if args.contains(&String::from("--profile")) || args.contains(&String::from("-p")) {
+        let profile_name = args.iter()
+            .position(|x| x == "--profile" || x == "-p")
+            .and_then(|idx| args.get(idx + 1))
+            .map(|s| s.as_str())
+            .unwrap_or("");
+        
+        let config_path = dirs::config_dir().unwrap().join("weatherfetch/profiles/").join(format!("{}.json", profile_name));
+        if config_path.exists() {
+            let config_data = std::fs::read_to_string(config_path).expect("Failed to read profile config");
+            if let Ok(profile_config) = serde_json::from_str::<config::Config>(&config_data) {
+                custom_profile = Some(profile_config);
+            } else {
+                println!("Failed to parse profile config! defaulting to generated config...");
+            }
+        } else {
+            println!("Profile not found! defaulting to generated config...");
+        }
+    } else if args.contains(&String::from("--add-profile")) {
+        return Some(config::add_profile()); 
+    }
+
+    let current_config: config::Config;
+    if custom_profile.is_none() {
+        current_config = match config::get() {
+            Some(config) => config,
+            None => return None,
+        };
+    } else {
+        current_config = custom_profile.unwrap();
+    }
 
     let mut hide_location = current_config.hide_location;
     let mut use_imperial = current_config.use_imperial;
@@ -38,6 +67,8 @@ pub fn parse(args: Vec<String>) -> Option<config::Config> {
         println!("  --hide-forecast           Hide forecast information");
         println!("  --lat <latitude>          Set custom latitude for weather data");
         println!("  --lon <longitude>         Set custom longitude for weather data");
+        println!("  --profile, -p <name>     Load a profile by name");
+        println!("  --add-profile             Create a new profile with custom settings");
         return Some(config::Config {
             hide_location: false,
             use_imperial: false,

@@ -21,6 +21,7 @@ dedicated to my weather nerd wife mari <3
 ## Features
 
 - Fetches weather data from the Open Meteo API.
+- Custom profiles to save settings for different locations or preferences.
 - Automatically detects your location based on your IP address (or from a configured custom location).
 - Displays current weather conditions, including temperature, humidity, wind speed, and more.
 - Optionally displays a 6-day forecast.
@@ -103,6 +104,8 @@ weatherfetch supports a number of custom arguments (**these will override whatev
 - `--hide-forecast`. Hides the forecast if you have `"forecast": true` in your config.
 - `--lat`. Set a custom latitude to fetch the weather from. **YOU MUST ALSO SET A LONGITUDE VALUE VIA `--lon`**
 - `--lon`. Set a custom longitude to fetch the weather from. **YOU MUST ALSO SET A LATITUDE VALUE VIA `--lat`**
+- `--profile` / `-p`. Load a custom profile by name.
+- `--add-profile`. Create a new profile with custom settings.
 
 #### Using arguments
 
