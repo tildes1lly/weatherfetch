@@ -58,7 +58,7 @@ fn main() {
         lat = custom_location.lat;
         lon = custom_location.lon;
         let client = reqwest::blocking::Client::builder()
-            .user_agent("weatherfetch/1.3.2")
+            .user_agent("weatherfetch/1.3.3")
             .build()
             .unwrap();
         let url: String = format!("https://nominatim.openstreetmap.org/reverse?lat={}&lon={}&format=json&accept-language=en", lat, lon);
