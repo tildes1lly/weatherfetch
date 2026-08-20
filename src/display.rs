@@ -313,7 +313,7 @@ pub fn output(weather_data: weather::OpenMeteoResponse, air_quality_data: weathe
     if config.use_imperial {
         for i in 0..7 {
             if c_to_f(forecast.temperature_max[i]).round() >= 100.0 {
-                forecast_string.push_str(&format!("║ High:    {}°F ", c_to_f(forecast.temperature_max[i]).round()));
+                forecast_string.push_str(&format!("║ High:     {}°F ", c_to_f(forecast.temperature_max[i]).round()));
             } else if c_to_f(forecast.temperature_max[i]).round() < 10.0 && c_to_f(forecast.temperature_min[i]).round() > -10.0 {
                 forecast_string.push_str(&format!("║ High:       {}°F ", c_to_f(forecast.temperature_max[i]).round()));
             } else {
